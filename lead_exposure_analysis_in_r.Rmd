@@ -1,0 +1,72 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+
+# Import libraries
+
+```{r}
+library(tidyverse)
+```
+
+
+
+# Load Data
+
+```{r}
+df <- read.csv("./assignment (8).csv")
+
+head(df)
+```
+
+
+```{r}
+str(df)
+```
+As per the metadata, playground, type, SES, peeling_paint, rubber_condition, EJ_criteria are categorical variable so changing it to factors would be appropriate.
+
+```{r}
+df$playground <- as.factor(df$playground)
+df$type <- as.factor(df$type)
+df$SES <- as.factor(df$SES)
+df$peeling_paint <- as.factor(df$peeling_paint)
+df$rubber_condition <- as.factor(df$rubber_condition)
+df$EJ_criteria <- as.factor(df$EJ_criteria)
+
+str(df)
+```
+
+## Summary
+
+
+```{r}
+df.grouping <- df %>% group_by(SES, type) %>%
+                   summarise(avg_pb = mean(avgPb),
+                             .groups = 'drop')
+
+df.grouping
+```
+
+
+
+
+## Question
+Is the amount of lead present in playground surface influenced by the socioeconomic status of the neighborhood and the type of surface of the playground?
+
+
+## Part A
+
+
+```{r}
+ggplot(data=df.grouping, aes(x=SES, y=avg_pb, fill=type)) +
+geom_bar(stat="identity", position=position_dodge()) + ggtitle("Socioeconomic status and Average lead in the playground as per type of surface")
+```
+
+
+## PART B
+
+We have created a bar graph with SES on the x-axis and avg_pb (Average lead) on the y-axis. We have used the type of surface as the filler to identify average lead in different surface type as per their SES classification i.e., high, medium, and low. From the above graph we can see the maximum lead is in surface is for type soil in every category of SES. Though the surface type soil is the highest i.e. 103 ug/g in SES category high. We can also see that the second highest position goes to SES category low for surface type soil with an average lead of 53.72 ug/g. Medium SES has the lowest lead in all the surface type categories, for comparison surface type soil has 35.7 ug/g. In conclusion, yes, the lead present in playground surface is influenced by the socioeconomic status of the neighborhood and the type of surface of the playground because the SES condition of high and low which are the extremes have high impact on the average lead in the surface specially in surface type soil.
